@@ -1,0 +1,24 @@
+image: python:3.11
+definitions:
+  steps:
+    - step: &qa
+        name: DMM-SimQA verification
+        caches:
+          - pip
+        script:
+          - python -m pip install -r requirements.txt
+          - python -m pytest
+        artifacts:
+          upload:
+            - name: dmm-simqa-test-report
+              type: shared
+              paths:
+                - reports/test_report.html
+              capture-on: always
+pipelines:
+  branches:
+    main:
+      - step: *qa
+  pull-requests:
+    '**':
+      - step: *qa
